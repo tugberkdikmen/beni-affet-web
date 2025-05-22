@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beni affet? (LÜTFEEEN)</title>
+
+  <style>
+    /* === GLOBAL === */
+    *,*::before,*::after{box-sizing:border-box;}
+    body{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:center; 
+      align-items:center;
+      height:100vh;
+      margin:0;
+      background:#f8f8f8;
+      font-family:"Helvetica Neue",Arial,sans-serif;
+      overflow:hidden;
+    }
+    h1{margin-bottom:2rem;font-size:2.4rem;color:#333;text-align:center;}
+    #btnWrapper{display:flex;gap:20px;}
+    button{
+      padding:1rem 2rem;
+      font-size:1.2rem;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    #yesBtn{background:#4caf50;color:#fff;}
+    #noBtn{background:#f44336;color:#fff;}
+
+    /* === GALLERY LAYOUT (EVET SONRASI) === */
+    .mosaic{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      grid-auto-rows:auto;
+      gap:1.2rem;
+      width:90vw;
+      max-width:1000px;
+      align-items:center;
+      justify-items:center;
+    }
+    .mosaic img{
+      width:100%;
+      height:auto;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,.15);
+      object-fit:cover;
+    }
+    .mosaic .msg{
+      font-size:2rem;
+      font-weight:700;
+      text-align:center;
+      color:#333;
+      line-height:1.2;
+    }
+    @media(max-width:600px){
+      .mosaic{
+        grid-template-columns:1fr; /* Tek sütun – sıra bozulmasın */
+      }
+      .mosaic .msg{font-size:1.6rem;}
+    }
+  </style>
+</head>
+<body>
+  <h1>Beni affet ?</h1>
+  <div id="btnWrapper">
+    <button id="yesBtn">Evet</button>
+    <button id="noBtn">Hayır</button>
+  </div>
+
+  <script>
+    const yesBtn=document.getElementById('yesBtn');
+    const noBtn=document.getElementById('noBtn');
+
+    /* === EVET AKSİYONU === */
+    yesBtn.addEventListener('click',()=>{
+      document.body.innerHTML=`
+        <div class="mosaic">
+          <img src="gif1.gif" alt="SENİ" />
+          <img src="photo1.png" alt="ÇOK" />
+          <img src="gif2.gif" alt="ÇOK" />
+
+          <img src="photo2.png" alt="ÇOK" />
+          <div class="msg">Teşekkür ederim! 💖</div>
+          <img src="photo3.png" alt="ÇOK" />
+
+          <img src="gif3.gif" alt="ÇOK" />
+          <img src="photo4.png" alt="SEVİYORUM" />
+          <img src="gif4.gif" alt="AŞKIM" />
+        </div>
+      `;
+    });
+
+    /* === HAYIR AKSİYONU === */
+    let activated=false;
+    function moveNoButtonRandom(){
+      if(!activated){
+        const rect=noBtn.getBoundingClientRect();
+        noBtn.style.position='fixed';
+        noBtn.style.left=`${rect.left}px`;
+        noBtn.style.top=`${rect.top}px`;
+        activated=true;
+      }
+      const margin=10;
+      const maxX=window.innerWidth-noBtn.offsetWidth-margin;
+      const maxY=window.innerHeight-noBtn.offsetHeight-margin;
+      const x=Math.random()*maxX+margin/2;
+      const y=Math.random()*maxY+margin/2;
+      noBtn.style.left=`${x}px`;
+      noBtn.style.top=`${y}px`;
+    }
+    ['click','touchstart'].forEach(evt=>{
+      noBtn.addEventListener(evt,e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        moveNoButtonRandom();
+      });
+    });
+    window.addEventListener('resize',()=>{
+      if(!activated)return;
+      const left=parseFloat(noBtn.style.left);
+      const top=parseFloat(noBtn.style.top);
+      const withinX=left>=0&&left+noBtn.offsetWidth<=window.innerWidth;
+      const withinY=top>=0&&top+noBtn.offsetHeight<=window.innerHeight;
+      if(!withinX||!withinY){moveNoButtonRandom();}
+    });
+  </script>
+</body>
+</html>
